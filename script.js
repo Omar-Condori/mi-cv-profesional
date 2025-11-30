@@ -10,7 +10,7 @@ updateThemeIcon(currentTheme);
 themeToggle.addEventListener('click', () => {
     const currentTheme = html.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
+
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     updateThemeIcon(newTheme);
@@ -77,11 +77,10 @@ const typedTextSpan = document.querySelector('.typed-text');
 const cursorSpan = document.querySelector('.cursor');
 
 const textArray = [
-    'Backend Developer',
-    'Python Expert',
-    'FastAPI Specialist',
-    'AWS Architect',
-    'DevOps Engineer'
+    'Developer - Python Flask',
+    'AWS - Docker',
+    'Java - Spring Boot',
+    'Flutter - Xcode - AndroidStudio',
 ];
 const typingDelay = 100;
 const erasingDelay = 50;
@@ -138,7 +137,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
-        
+
         if (target) {
             const headerOffset = 80;
             const elementPosition = target.getBoundingClientRect().top;
@@ -157,21 +156,21 @@ const contactForm = document.getElementById('contactForm');
 
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     // Obtener valores del formulario
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const subject = document.getElementById('subject').value;
     const message = document.getElementById('message').value;
-    
+
     // Aquí puedes integrar con un servicio de email como EmailJS, Formspree, etc.
     // Por ahora, mostraremos un mensaje de éxito
-    
+
     alert(`¡Gracias ${name}! Tu mensaje ha sido enviado. Te contactaré pronto a ${email}.`);
-    
+
     // Limpiar formulario
     contactForm.reset();
-    
+
     // En producción, aquí irías con EmailJS u otro servicio:
     /*
     emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
@@ -204,7 +203,7 @@ const animateSkillBars = () => {
     skillBars.forEach(bar => {
         const barPosition = bar.getBoundingClientRect().top;
         const screenPosition = window.innerHeight / 1.3;
-        
+
         if (barPosition < screenPosition) {
             const width = bar.style.width;
             bar.style.width = '0%';
@@ -250,8 +249,8 @@ console.log('%cEmail: tu@email.com', 'color: #6b7280; font-size: 12px;');
 
 // ==================== PERFORMANCE MONITORING ====================
 window.addEventListener('load', () => {
-    const loadTime = window.performance.timing.domContentLoadedEventEnd - 
-                    window.performance.timing.navigationStart;
+    const loadTime = window.performance.timing.domContentLoadedEventEnd -
+        window.performance.timing.navigationStart;
     console.log(`Página cargada en ${loadTime}ms`);
 });
 
@@ -279,7 +278,7 @@ const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
 emailLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         const email = link.getAttribute('href').replace('mailto:', '');
-        
+
         // Copiar al portapapeles
         if (navigator.clipboard) {
             navigator.clipboard.writeText(email).then(() => {
