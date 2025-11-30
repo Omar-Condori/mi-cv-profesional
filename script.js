@@ -154,38 +154,82 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ==================== CONTACT FORM ====================
 const contactForm = document.getElementById('contactForm');
 
+// Inicializar EmailJS (el usuario debe reemplazar 'YOUR_PUBLIC_KEY' con su clave)
+// Obtén tu Public Key en: https://dashboard.emailjs.com/admin/account
+(function () {
+    // Solo inicializar si EmailJS está disponible
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init({
+            publicKey: 'v15bwi3JrIYypP-l3', // ⚠️ REEMPLAZAR CON TU PUBLIC KEY
+        });
+    }
+})();
+
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Obtener valores del formulario
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const subject = document.getElementById('subject').value;
-    const message = document.getElementById('message').value;
+    // Obtener el botón de envío
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
 
-    // Aquí puedes integrar con un servicio de email como EmailJS, Formspree, etc.
-    // Por ahora, mostraremos un mensaje de éxito
+    // Validar que EmailJS esté configurado
+    if (typeof emailjs === 'undefined') {
+        alert('⚠️ Error: EmailJS no está cargado. Por favor recarga la página.');
+        return;
+    }
 
-    alert(`¡Gracias ${name}! Tu mensaje ha sido enviado. Te contactaré pronto a ${email}.`);
+    // Mostrar estado de carga
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+    submitBtn.disabled = true;
 
-    // Limpiar formulario
-    contactForm.reset();
+    // Enviar el formulario usando EmailJS
+    // Parámetros: serviceID, templateID, formulario
+    emailjs.sendForm(
+        'service_vg9fcqz',  // ⚠️ REEMPLAZAR CON TU SERVICE ID
+        'template_odpfx0p', // ⚠️ REEMPLAZAR CON TU TEMPLATE ID
+        contactForm
+    )
+        .then(() => {
+            // Éxito
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
+            submitBtn.style.backgroundColor = '#10b981';
 
-    // En producción, aquí irías con EmailJS u otro servicio:
-    /*
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-        from_name: name,
-        from_email: email,
-        subject: subject,
-        message: message
-    }).then(() => {
-        alert('Mensaje enviado exitosamente!');
-        contactForm.reset();
-    }).catch((error) => {
-        alert('Error al enviar el mensaje. Por favor intenta de nuevo.');
-        console.error('Error:', error);
-    });
-    */
+            // Mostrar mensaje de éxito
+            alert('✅ ¡Gracias! Tu mensaje ha sido enviado exitosamente. Te contactaré pronto.');
+
+            // Limpiar formulario
+            contactForm.reset();
+
+            // Restaurar botón después de 3 segundos
+            setTimeout(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '';
+            }, 3000);
+        })
+        .catch((error) => {
+            // Error
+            console.error('Error al enviar:', error);
+
+            submitBtn.innerHTML = '<i class="fas fa-times"></i> Error';
+            submitBtn.style.backgroundColor = '#ef4444';
+
+            // Mensaje de error dependiendo del tipo
+            if (error.text && error.text.includes('PUBLIC_KEY')) {
+                alert('⚠️ Error de configuración: Por favor configura tu Public Key de EmailJS.\n\nRevisa el archivo email-config.md para más información.');
+            } else if (error.text && (error.text.includes('SERVICE_ID') || error.text.includes('TEMPLATE_ID'))) {
+                alert('⚠️ Error de configuración: Por favor configura tu Service ID y Template ID.\n\nRevisa el archivo email-config.md para más información.');
+            } else {
+                alert('❌ Error al enviar el mensaje. Por favor intenta de nuevo más tarde o contáctame directamente por email.');
+            }
+
+            // Restaurar botón después de 3 segundos
+            setTimeout(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '';
+            }, 3000);
+        });
 });
 
 // ==================== AOS ANIMATION INITIALIZATION ====================
